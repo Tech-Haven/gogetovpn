@@ -16,6 +16,7 @@ sudo -u $real_user make build
 
 ## Create systemd service
 SERVICE_NAME="gogetovpn"
+SECRET=$(openssl rand -base64 32)
 
 IS_ACTIVE=$(systemctl is-active $SERVICE_NAME)
 if [ "$IS_ACTIVE" = "active" ]; then
@@ -34,7 +35,8 @@ After=network.target
 
 [Service]
 Environment=APP_ENV=production
-Environment=AUTH_SECRET=valid-key
+Environment=AUTH_SECRET=$SECRET
+Environment=OPENVPN_INSTALL_SCRIPT_DIR=$PWD/bin/openvpn-install.sh
 ExecStart=$PWD/bin/${SERVICE_NAME}
 Restart=on-failure
 
