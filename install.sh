@@ -1,13 +1,24 @@
 # /bin/bash
 
+if ! [ $(id -u) = 0 ]; then
+   echo "The script need to be run as root." >&2
+   exit 1
+fi
+
+if [ $SUDO_USER ]; then
+    real_user=$SUDO_USER
+else
+    real_user=$(whoami)
+fi
+
 ## Build project
-make build
+sudo -u $real_user make build
 
 ## Create systemd service
-SERVICE_NAME="gogenovpn"
+SERVICE_NAME="gogetovpn"
 
 IS_ACTIVE=$(systemctl is-active $SERVICE_NAME)
-if [ "$IS_ACTIVE" == "active" ]; then
+if [ "$IS_ACTIVE" = "active" ]; then
   # restart the service
   echo "Service is running"
   echo "Restarting service"
@@ -24,7 +35,7 @@ After=network.target
 [Service]
 Environment=APP_ENV=production
 Environment=AUTH_SECRET=valid-key
-ExecStart=$PWD/bin/gogetovpn
+ExecStart=$PWD/bin/${SERVICE_NAME}
 Restart=on-failure
 
 [Install]

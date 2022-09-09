@@ -19,7 +19,7 @@ func GetOvpn(config *configs.Config) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, responses.HTTPResponse{Status: http.StatusBadRequest, Message: "error", Data: &echo.Map{"data": "No client"}})
 		}
 
-		stdout, stderr, err := utils.ExecShell(fmt.Sprintf("sudo -S env MENU_OPTION='1' CLIENT='%s' PASS='1' ./openvpn-install.sh > /dev/null && cat ~/%s.ovpn", client, client))
+		stdout, stderr, err := utils.ExecShell(fmt.Sprintf("sudo -S env MENU_OPTION='1' CLIENT='%s' PASS='1' %s > /dev/null && cat ~/%s.ovpn", client, configs.OpenVpnInstallScriptDir(), client))
 
 		if err != nil {
 			fmt.Printf("error: %v", stderr)
