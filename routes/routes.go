@@ -7,5 +7,5 @@ import (
 )
 
 func Routes(e *echo.Echo, configuration *configs.Config) {
-	e.GET("/ovpn", controllers.GetOvpn(configuration))
+	e.POST("/ovpn", controllers.GetOvpn(configuration))
 }
